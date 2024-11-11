@@ -1,23 +1,23 @@
 import { Router } from "express";
 import { BaseRequest, BaseResponse } from "../../types/common";
-import { UserService } from "../../services/user.service";
 import errorHandler from "../../helpers/errorHandler";
 import isAdmin from "../../middlewares/isAdminMiddleware";
+import { SubjectService } from "../../services/subject.service";
 
 const router = Router();
 
-export const handler = async (req: BaseRequest<{ userService: UserService }>, res: BaseResponse) => {
+export const handler = async (req: BaseRequest<{ subjectService: SubjectService }>, res: BaseResponse) => {
   try {
-    const { id } = req.params as any;
+    const { name, description, classId } = req.body;
     const {
-      services: { userService },
+      services: { subjectService },
     } = req.app;
 
-    await userService.deleteUser(id);
+    const result = await subjectService.createSubject({ name, description, classId } as any);
 
-    res.json({
+    res.status(201).json({
       message: "ok",
-      data: "",
+      data: result,
     });
   } catch (error) {
     errorHandler(error, res);
@@ -26,12 +26,12 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
 
 /**
  * @swagger
- * /users/{id}:
- *   delete:
- *     summary: Delete User By Id
- *     description: Delete a User for Role Admin
+ * /subjects:
+ *   post:
+ *     summary: Create Subject
+ *     description: Create a Subject for Role Admin
  *     tags:
- *       - User
+ *       - Subject
  *     parameters:
  *       - in: header
  *         name: jwt
@@ -40,14 +40,25 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
  *           example: jwt
  *         required: true
  *         description: user login access token.
- *       - in: path
- *         name: id
- *         type: string
- *         required: true
- *         description: ID of the user to retrieve
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 required: true
+ *               description:
+ *                 type: string
+ *                 required: false
+ *               classId:
+ *                 type: string
+ *                 required: true
  *     responses:
- *       200:
- *         description: Success Delete User
+ *       201:
+ *         description: Success Create Subject
  *         content:
  *           application/json:
  *             schema:
@@ -56,8 +67,16 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
  *                 message:
  *                   type: string
  *                 data:
- *                   type: string
- *                   example: ""
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     description:
+ *                       type: string
+ *                     classId:
+ *                       type: string
  *       404:
  *         description: Not found
  *         content:
@@ -86,6 +105,6 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
  *                 message:
  *                   type: string
  */
-const deleteUserRoute = router.delete("/users/:id", isAdmin, handler as any);
+const createSubjectRoute = router.post("/subjects", isAdmin, handler as any);
 
-export default deleteUserRoute;
+export default createSubjectRoute;

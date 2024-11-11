@@ -79,7 +79,7 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
  *                         type: string
  *                       fullname:
  *                         type: string
- *                       role_id:
+ *                       roleId:
  *                         type: string
  *       404:
  *         description: Not found
