@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "lib": ["ES5"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "incremental": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    "outDir": "./build",
+    "removeComments": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["**.ts", "**/*.ts"],
+  "exclude": [
+    "test",
+    "build",
+    "vitest.config.ts",
+    "vitest.setup.ts",
+    "**.test.ts",
+    "**/*.test.ts",
+    "node_modules",
+    "prisma",
+    "__mocks__"
+  ]
+}
