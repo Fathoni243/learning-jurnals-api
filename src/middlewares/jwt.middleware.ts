@@ -8,7 +8,7 @@ const jwtMiddleWare = (req: Request, res: Response, next: NextFunction) => {
   if (IGNORED_JWT_PATH.includes(req.path)) {
     next();
     return;
-  } 
+  }
 
   for (const e of IGNORED_JWT_PATH_START_WITH) {
     if (req.path.startsWith(e)) {

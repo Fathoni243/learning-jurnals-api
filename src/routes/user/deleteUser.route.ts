@@ -17,7 +17,7 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
 
     res.json({
       message: "ok",
-      data: ""
+      data: "",
     });
   } catch (error) {
     errorHandler(error, res);

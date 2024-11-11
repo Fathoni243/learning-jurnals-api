@@ -27,7 +27,7 @@ export const setupServer = async () => {
 
   /** middleware */
   app.use(await getMiddleWares());
-  
+
   /** services */
   app.services = await createService();
 

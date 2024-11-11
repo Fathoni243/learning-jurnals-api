@@ -30,10 +30,7 @@ const _populateRepositories = async (db: PrismaClient, config: ConfigProps): Pro
   return repositories;
 };
 
-const _populateServices = async (ctx: {
-  repositories: Repositories;
-  config: ConfigProps;
-}): Promise<Services> => {
+const _populateServices = async (ctx: { repositories: Repositories; config: ConfigProps }): Promise<Services> => {
   const paths = await pathResolver(__dirname + "/../services", { includes: [".service.js", ".service.ts"] });
   console.log(chalk.greenBright(`\nBuilding services`));
 
