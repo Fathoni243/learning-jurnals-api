@@ -61,6 +61,8 @@ export class UserRepository {
         fullName: true,
         roleId: true,
         classId: true,
+        role: true,
+        class: true,
       },
     });
   }

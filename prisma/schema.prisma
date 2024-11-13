@@ -13,6 +13,8 @@ model Role {
   description String? @db.Text
 
   User User[]
+
+  @@map("role")
 }
 
 model User {
@@ -20,11 +22,13 @@ model User {
   email    String  @unique @db.VarChar(255)
   password String  @db.VarChar(255)
   fullName String  @db.VarChar(255)
-  roleId   String  @db.VarChar(36)
-  classId  String? @db.VarChar(36)
+  roleId   String  @db.VarChar(36) @map("role_id")
+  classId  String? @db.VarChar(36) @map("class_id")
 
   role  Role   @relation(fields: [roleId], references: [id])
   class Class? @relation(fields: [classId], references: [id])
+
+  @@map("user")
 }
 
 model Class {
@@ -35,15 +39,20 @@ model Class {
   User    User[]
   Student Student[]
   Subject Subject[]
+
+  @@map("class")
 }
 
 model Student {
   id      String @id @default(uuid()) @db.VarChar(36)
-  classId String @db.VarChar(36)
+  classId String @db.VarChar(36) @map("class_id")
   name    String @db.VarChar(255)
   gender  Gender
 
-  class Class @relation(fields: [classId], references: [id])
+  class          Class            @relation(fields: [classId], references: [id])
+  Student_Absent Student_Absent[]
+
+  @@map("student")
 }
 
 enum Gender {
@@ -51,12 +60,58 @@ enum Gender {
   female
 }
 
-model Subject { // Mata Pelajaran
+model Subject {
   id          String  @id @default(uuid()) @db.VarChar(36)
   name        String  @db.VarChar(255)
   description String? @db.Text
-  classId     String  @db.VarChar(36)
+  classId     String  @db.VarChar(36) @map("class_id")
 
-  class Class @relation(fields: [classId], references: [id])
+  class            Class              @relation(fields: [classId], references: [id])
+  Learning_Journal Learning_Journal[]
+
+  @@map("subject")
 }
 
+model Learning_Journal {
+  id               String   @id @default(uuid()) @db.VarChar(36)
+  subjectId        String   @db.VarChar(36) @map("subject_id")
+  date             DateTime @db.Date
+  learningMaterial String   @db.VarChar(255) @map("learning_material")
+  learningActivity String   @db.Text @map("learning_activity")
+  description      String?  @db.Text
+
+  subject        Subject          @relation(fields: [subjectId], references: [id])
+  Student_Absent Student_Absent[]
+  Approval       Approval?
+
+  @@map("learning_journal")
+}
+
+model Student_Absent {
+  id               String  @id @default(uuid()) @db.VarChar(36)
+  learningJournalId String  @db.VarChar(36) @map("learning_journal_id")
+  studentId        String  @db.VarChar(36) @map("student_id")
+  description      String? @db.Text
+
+  learningJournal Learning_Journal @relation(fields: [learningJournalId], references: [id])
+  student         Student          @relation(fields: [studentId], references: [id])
+
+  @@map("student_absent")
+}
+
+model Approval {
+  id               String         @id @default(uuid()) @db.VarChar(36)
+  learningJournalId String         @unique @db.VarChar(36) @map("learning_journal_id")
+  status           StatusApproval
+  description      String?        @db.Text
+
+  learningJournal Learning_Journal @relation(fields: [learningJournalId], references: [id])
+
+  @@map("approval")
+}
+
+enum StatusApproval {
+  pending
+  approved
+  rejected
+}

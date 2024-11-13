@@ -3,24 +3,29 @@ import SubjectRepository from "../repositories/subject.repository";
 import throwIfMissing from "../helpers/throwIfMissing";
 import { v7 as uuidv7 } from "uuid";
 import { Pagination, Search } from "../types/common";
+import ClassRepository from "../repositories/class.repository";
 
 export class SubjectService {
   name = "subjectService";
   subjectRepository: SubjectRepository;
+  classRepository: ClassRepository;
 
   constructor(ctx: {
     repositories: {
       subjectRepository: SubjectRepository;
+      classRepository: ClassRepository;
     };
   }) {
     this.subjectRepository = ctx.repositories.subjectRepository;
+    this.classRepository = ctx.repositories.classRepository;
   }
 
   async createSubject(data: Subject) {
     throwIfMissing(data.name, "Name is required!", 400);
     throwIfMissing(data.classId, "ClassId is required!", 400);
 
-    /** TODO : Check if class exists */
+    const checkClass = await this.classRepository.findClassById(data.classId);
+    throwIfMissing(checkClass, "Class not found", 404);
 
     data.id = uuidv7();
     return this.subjectRepository.createSubject(data);
@@ -31,10 +36,6 @@ export class SubjectService {
 
     const checkSubject = await this.subjectRepository.findSubject(id);
     throwIfMissing(checkSubject, "Subject not found", 404);
-
-    if (data.classId) {
-      /** TODO : Check if class exists */
-    }
 
     return this.subjectRepository.updateSubject(id, data);
   }
@@ -53,7 +54,8 @@ export class SubjectService {
     props.offset = Number(props.offset ?? 0);
     props.search = props.search ?? "";
 
-    /** TODO : Check if class exists */
+    const checkClass = await this.classRepository.findClassById(classId);
+    throwIfMissing(checkClass, "Class not found", 404);
 
     return this.subjectRepository.findSubjects(props, classId);
   }
