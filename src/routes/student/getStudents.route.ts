@@ -34,7 +34,7 @@ export const handler = async (req: BaseRequest<{ studentService: StudentService 
 
 /**
  * @swagger
- * /students:
+ * /class/{id}/students:
  *   get:
  *     summary: Get All Student
  *     description: Get All Student for Role Admin
@@ -65,7 +65,12 @@ export const handler = async (req: BaseRequest<{ studentService: StudentService 
  *         schema:
  *           type: string
  *         required: false
- *         description: Search by fullname.
+ *         description: Search by name.
+ *       - in: path
+ *         name: id
+ *         type: string
+ *         required: true
+ *         description: ID of the class to retrieve
  *     responses:
  *       200:
  *         description: Get Users successfully
@@ -127,6 +132,6 @@ export const handler = async (req: BaseRequest<{ studentService: StudentService 
  *                   type: string
  */
 
-const getStudentsRoute = router.get("/students", isAdmin, handler as any);
+const getStudentsRoute = router.get("/class/:id/students", isAdmin, handler as any);
 
 export default getStudentsRoute;

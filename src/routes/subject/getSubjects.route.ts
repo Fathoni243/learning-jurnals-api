@@ -41,6 +41,24 @@ export const handler = async (req: BaseRequest<{ subjectService: SubjectService 
  *           example: jwt
  *         required: true
  *         description: user login access token.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: int
+ *         required: false
+ *         description: Maximum amount of data taken.
+ *       - in: query
+ *         name: offset
+ *         schema:
+ *           type: int
+ *         required: false
+ *         description: The amount of data that will be skipped at the beginning.
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Search by name.
  *       - in: path
  *         name: id
  *         type: string

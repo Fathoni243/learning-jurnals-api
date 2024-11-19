@@ -22,8 +22,8 @@ model User {
   email    String  @unique @db.VarChar(255)
   password String  @db.VarChar(255)
   fullName String  @db.VarChar(255)
-  roleId   String  @db.VarChar(36) @map("role_id")
-  classId  String? @db.VarChar(36) @map("class_id")
+  roleId   String  @map("role_id") @db.VarChar(36)
+  classId  String? @map("class_id") @db.VarChar(36)
 
   role  Role   @relation(fields: [roleId], references: [id])
   class Class? @relation(fields: [classId], references: [id])
@@ -45,7 +45,7 @@ model Class {
 
 model Student {
   id      String @id @default(uuid()) @db.VarChar(36)
-  classId String @db.VarChar(36) @map("class_id")
+  classId String @map("class_id") @db.VarChar(36)
   name    String @db.VarChar(255)
   gender  Gender
 
@@ -64,7 +64,7 @@ model Subject {
   id          String  @id @default(uuid()) @db.VarChar(36)
   name        String  @db.VarChar(255)
   description String? @db.Text
-  classId     String  @db.VarChar(36) @map("class_id")
+  classId     String  @map("class_id") @db.VarChar(36)
 
   class            Class              @relation(fields: [classId], references: [id])
   Learning_Journal Learning_Journal[]
@@ -74,10 +74,10 @@ model Subject {
 
 model Learning_Journal {
   id               String   @id @default(uuid()) @db.VarChar(36)
-  subjectId        String   @db.VarChar(36) @map("subject_id")
+  subjectId        String   @map("subject_id") @db.VarChar(36)
   date             DateTime @db.Date
-  learningMaterial String   @db.VarChar(255) @map("learning_material")
-  learningActivity String   @db.Text @map("learning_activity")
+  learningMaterial String   @map("learning_material") @db.VarChar(255)
+  learningActivity String   @map("learning_activity") @db.Text
   description      String?  @db.Text
 
   subject        Subject          @relation(fields: [subjectId], references: [id])
@@ -88,10 +88,10 @@ model Learning_Journal {
 }
 
 model Student_Absent {
-  id               String  @id @default(uuid()) @db.VarChar(36)
-  learningJournalId String  @db.VarChar(36) @map("learning_journal_id")
-  studentId        String  @db.VarChar(36) @map("student_id")
-  description      String? @db.Text
+  id                String  @id @default(uuid()) @db.VarChar(36)
+  learningJournalId String  @map("learning_journal_id") @db.VarChar(36)
+  studentId         String  @map("student_id") @db.VarChar(36)
+  description       String? @db.Text
 
   learningJournal Learning_Journal @relation(fields: [learningJournalId], references: [id])
   student         Student          @relation(fields: [studentId], references: [id])
@@ -100,10 +100,10 @@ model Student_Absent {
 }
 
 model Approval {
-  id               String         @id @default(uuid()) @db.VarChar(36)
-  learningJournalId String         @unique @db.VarChar(36) @map("learning_journal_id")
-  status           StatusApproval
-  description      String?        @db.Text
+  id                String         @id @default(uuid()) @db.VarChar(36)
+  learningJournalId String         @unique @map("learning_journal_id") @db.VarChar(36)
+  status            StatusApproval
+  description       String?        @db.Text
 
   learningJournal Learning_Journal @relation(fields: [learningJournalId], references: [id])
 
