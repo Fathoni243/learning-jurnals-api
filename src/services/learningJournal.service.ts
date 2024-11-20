@@ -1,4 +1,4 @@
-import { Learning_Journal } from "@prisma/client";
+import { Approval, Learning_Journal } from "@prisma/client";
 import LearningJournalRepository from "../repositories/learningJournal.repository";
 import throwIfMissing from "../helpers/throwIfMissing";
 import SubjectRepository from "../repositories/subject.repository";
@@ -79,7 +79,7 @@ export class LearningJournalService {
         id: learningJournal!.subjectId,
         name: learningJournal!.subject.name,
       },
-      statusApproval: {
+      approval: {
         id: learningJournal!.approval!.id,
         status: learningJournal!.approval!.status,
         description: learningJournal!.approval?.description,
@@ -125,6 +125,19 @@ export class LearningJournalService {
     }
 
     return this.learningJournalRepository.deleteLearningJournal(id, checkLearningJournal!.approval!.id);
+  }
+
+  async approveLearningJournal(id: string, data: Partial<Approval>) {
+    throwIfMissing(id, "Id Approval is required!", 400);
+
+    const checkApproval = await this.learningJournalRepository.getApprovalbyId(id);
+    throwIfMissing(checkApproval, "Approval not found", 404);
+
+    if (data.status && data.status !== "approved" && data.status !== "rejected") {
+      throw new ResponseError(400, "Status must be approved or rejected");
+    }
+
+    return this.learningJournalRepository.approveLearningJournal(id, data);
   }
 }
 

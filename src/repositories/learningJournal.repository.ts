@@ -1,4 +1,4 @@
-import { Learning_Journal, PrismaClient } from "@prisma/client";
+import { Approval, Learning_Journal, PrismaClient } from "@prisma/client";
 import { Pagination, Search } from "../types/common";
 
 export class LearningJournalRepository {
@@ -60,17 +60,30 @@ export class LearningJournalRepository {
     return this.db.$transaction(async (tx) => {
       await tx.student_Absent.deleteMany({
         where: { learningJournalId: id },
-      })
+      });
 
       await tx.approval.delete({
         where: { id: approvalId },
-      })
+      });
 
       const deletedResult = await tx.learning_Journal.delete({
         where: { id },
       });
 
       return deletedResult;
+    });
+  }
+
+  async getApprovalbyId(id: string) {
+    return this.db.approval.findUnique({
+      where: { id },
+    });
+  }
+
+  async approveLearningJournal(id: string, data: Partial<Approval>) {
+    return this.db.approval.update({
+      where: { id },
+      data,
     });
   }
 }
