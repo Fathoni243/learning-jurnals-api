@@ -9,12 +9,12 @@ const router = Router();
 export const handler = async (req: BaseRequest<{ userService: UserService }>, res: BaseResponse) => {
   try {
     const { id } = req.params as any;
-    const { password, fullName, roleId } = req.body;
+    const { email, password, fullName, roleId, classId } = req.body;
     const {
       services: { userService },
     } = req.app;
 
-    const result = await userService.updateUser(id, { password, fullName, roleId } as any);
+    const result = await userService.updateUser(id, { email, password, fullName, roleId, classId } as any);
 
     res.json({
       message: "ok",
@@ -53,6 +53,9 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
  *           schema:
  *             type: object
  *             properties:
+ *               email:
+ *                 type: string
+ *                 required: false
  *               fullName:
  *                 type: string
  *                 required: false
@@ -60,6 +63,9 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
  *                 type: string
  *                 required: false
  *               roleId:
+ *                 type: string
+ *                 required: false
+ *               classId:
  *                 type: string
  *                 required: false
  *     responses:
@@ -80,6 +86,8 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
  *                     fullName:
  *                       type: string
  *                     roleId:
+ *                       type: string
+ *                     classId:
  *                       type: string
  *       404:
  *         description: Not found

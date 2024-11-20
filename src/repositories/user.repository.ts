@@ -14,7 +14,13 @@ export class UserRepository {
   async findUserById(id: string) {
     throwIfMissing(id, "Unauthorized", 401);
 
-    return this.db.user.findUnique({ where: { id } });
+    return this.db.user.findUnique({
+      where: { id },
+      include: {
+        role: true,
+        class: true,
+      },
+    });
   }
 
   async findUserByEmail(email: string) {

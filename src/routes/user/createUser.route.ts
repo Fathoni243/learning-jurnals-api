@@ -8,12 +8,12 @@ const router = Router();
 
 export const handler = async (req: BaseRequest<{ userService: UserService }>, res: BaseResponse) => {
   try {
-    const { email, password, fullName, roleId } = req.body;
+    const { email, password, fullName, roleId, classId } = req.body;
     const {
       services: { userService },
     } = req.app;
 
-    const result = await userService.createUser({ email, password, fullName, roleId } as any);
+    const result = await userService.createUser({ email, password, fullName, roleId, classId } as any);
 
     res.status(201).json({
       message: "ok",
@@ -59,6 +59,9 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
  *               roleId:
  *                 type: string
  *                 required: true
+ *               classId:
+ *                 type: string
+ *                 required: false
  *     responses:
  *       201:
  *         description: Success Create User
@@ -77,6 +80,8 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
  *                     fullName:
  *                       type: string
  *                     roleId:
+ *                       type: string
+ *                     classId:
  *                       type: string
  *       404:
  *         description: Not found

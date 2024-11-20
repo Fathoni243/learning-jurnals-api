@@ -8,20 +8,24 @@ import { v7 as uuidv7 } from "uuid";
 import config from "../config";
 import bcrypt from "bcrypt";
 import { Pagination, Search } from "../types/common";
+import ClassRepository from "../repositories/class.repository";
 
 export class UserService {
   name = "userService";
   userRepository: UserRepository;
   roleRepository: RoleRepository;
+  classRepository: ClassRepository;
 
   constructor(ctx: {
     repositories: {
       userRepository: UserRepository;
       roleRepository: RoleRepository;
+      classRepository: ClassRepository;
     };
   }) {
     this.userRepository = ctx.repositories.userRepository;
     this.roleRepository = ctx.repositories.roleRepository;
+    this.classRepository = ctx.repositories.classRepository;
   }
 
   async createUser(data: User) {
@@ -30,7 +34,6 @@ export class UserService {
     throwIfMissing(data.password, "password is required!", 400);
     throwIfMissing(data.fullName, "fullName is required!", 400);
     throwIfMissing(data.roleId, "roleId is required!", 400);
-    throwIfMissing(data.classId, "classId is required!", 400);
 
     const checkEmail = await this.userRepository.findUserByEmail(data.email);
     if (checkEmail) {
@@ -39,6 +42,11 @@ export class UserService {
 
     const checkRole = await this.roleRepository.getById(data.roleId);
     throwIfMissing(checkRole, "Role not found", 404);
+    
+    if (data.classId) {
+      const checkClass = await this.classRepository.findClassById(data.classId!);
+      throwIfMissing(checkClass, "Class not found", 404);
+    }
 
     data.id = uuidv7();
     data.password = await bcrypt.hash(data.password!, parseInt(config.salt));
@@ -69,9 +77,21 @@ export class UserService {
     const checkUser = await this.userRepository.findUserById(id);
     throwIfMissing(checkUser, "User not found", 404);
 
+    if (data.email && data.email !== checkUser!.email) {
+      const checkEmail = await this.userRepository.findUserByEmail(data.email);
+      if (checkEmail && checkEmail.id !== id) {
+        throw new Error400({ message: "Email already exists" });
+      }
+    }
+
     if (data.roleId) {
       const checkRole = await this.roleRepository.getById(data.roleId);
       throwIfMissing(checkRole, "Role not found", 404);
+    }
+
+    if (data.classId) {
+      const checkClass = await this.classRepository.findClassById(data.classId);
+      throwIfMissing(checkClass, "Class not found", 404);
     }
 
     if (data.password && !(await bcrypt.compare(checkUser!.password, data.password))) {

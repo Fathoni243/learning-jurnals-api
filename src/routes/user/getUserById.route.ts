@@ -17,12 +17,7 @@ export const handler = async (req: BaseRequest<{ userService: UserService }>, re
 
     res.json({
       message: "ok",
-      data: {
-        id: result!.id,
-        email: result!.email,
-        fullName: result!.fullName,
-        roleId: result!.roleId,
-      },
+      data: result,
     });
   } catch (error) {
     errorHandler(error, res);
