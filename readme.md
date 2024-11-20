@@ -7,16 +7,16 @@ This project aims to provide endpoints for the Express Starter Apps, facilitatin
 	```bash
 	$ npm install
 	```
-3. Set up local database with prisma
+3. Copy environment file and set the configuration 
+	```bash
+	$ cp env.example .env
+	```
+4. Set up local database with prisma
 	```bash
 	$ npx prisma migrate status
 	$ npx prisma migrate deploy
 	$ npx prisma generate
 	$ npx prisma db seed
-	```
-4. Copy environment file
-	```bash
-	$ cp env.example .env
 	```
 5. Run service
 	```bash
