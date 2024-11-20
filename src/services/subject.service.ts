@@ -4,20 +4,24 @@ import throwIfMissing from "../helpers/throwIfMissing";
 import { v7 as uuidv7 } from "uuid";
 import { Pagination, Search } from "../types/common";
 import ClassRepository from "../repositories/class.repository";
+import UserRepository from "../repositories/user.repository";
 
 export class SubjectService {
   name = "subjectService";
   subjectRepository: SubjectRepository;
   classRepository: ClassRepository;
+  userRepository: UserRepository;
 
   constructor(ctx: {
     repositories: {
       subjectRepository: SubjectRepository;
       classRepository: ClassRepository;
+      userRepository: UserRepository;
     };
   }) {
     this.subjectRepository = ctx.repositories.subjectRepository;
     this.classRepository = ctx.repositories.classRepository;
+    this.userRepository = ctx.repositories.userRepository;
   }
 
   async createSubject(data: Subject) {
@@ -58,6 +62,17 @@ export class SubjectService {
     throwIfMissing(checkClass, "Class not found", 404);
 
     return this.subjectRepository.findSubjects(props, classId);
+  }
+
+  async getSubjectsForTeacher(props: Pagination & Search, teacherId: string) {
+    props.limit = Number(props.limit ?? 10);
+    props.offset = Number(props.offset ?? 0);
+    props.search = props.search ?? "";
+
+    const user = await this.userRepository.findUserById(teacherId);
+    throwIfMissing(user, "User not found", 404);
+
+    return this.subjectRepository.findSubjects(props, user!.classId!);
   }
 
   async deleteSubject(id: string) {

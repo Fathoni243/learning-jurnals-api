@@ -20,7 +20,12 @@ export class UserRepository {
   async findUserByEmail(email: string) {
     throwIfMissing(email, "Unauthorized", 401);
 
-    return this.db.user.findUnique({ where: { email } });
+    return this.db.user.findUnique({
+      where: { email },
+      include: {
+        role: true,
+      },
+    });
   }
 
   async createUser(data: User) {

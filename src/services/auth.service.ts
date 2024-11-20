@@ -21,6 +21,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
+    throwIfMissing(email, "email is required!", 400);
     throwIfNotEmail(email, "Invalid email format!", 400);
     throwIfMissing(password, "password is required!", 400);
 
@@ -40,7 +41,10 @@ export class AuthService {
         roleId: data.roleId,
       })),
       id: data.id,
-      roleId: data.roleId,
+      role: {
+        id: data.roleId,
+        name: data.role.name,
+      }
     };
   }
 
