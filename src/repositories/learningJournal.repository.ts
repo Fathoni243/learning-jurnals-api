@@ -58,6 +58,10 @@ export class LearningJournalRepository {
 
   async deleteLearningJournal(id: string, approvalId: string) {
     return this.db.$transaction(async (tx) => {
+      await tx.student_Absent.deleteMany({
+        where: { learningJournalId: id },
+      })
+
       await tx.approval.delete({
         where: { id: approvalId },
       })
