@@ -1,5 +1,5 @@
-# Express Starter Backend
-This project aims to provide endpoints for the Express Starter Apps, facilitating various functionalities within the application.
+# Learning Journal Backend
+This project aims to provide endpoints for the Learning Journal Apps, facilitating various functionalities within the application.
 
 ## Installation
 1. Clone this repository
